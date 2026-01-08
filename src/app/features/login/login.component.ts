@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { users } from '../../data/users';
 
 export interface LoginForm {
   email: string;
@@ -46,6 +47,11 @@ export interface LoginForm {
 
         <button mat-flat-button color="primary" type="submit" class="login-button">Login</button>
       </form>
+      @if(showLoginErrors()) {
+      <div class="error-message">
+        <mat-error>Incorrect email or password</mat-error>
+      </div>
+      }
     </mat-card>
   `,
   styles: [
@@ -76,8 +82,10 @@ export interface LoginForm {
 export class LoginComponent {
   private readonly authStore = inject(AuthStore);
   private readonly router = inject(Router);
+
+  showLoginErrors = signal(false);
   protected readonly loginData = signal<LoginForm>({
-    email: 'test@email.com',
+    email: 'admin@test.com',
     password: 'password123',
   });
   protected readonly loginForm = form(this.loginData, (path) => {
@@ -89,10 +97,19 @@ export class LoginComponent {
     maxLength(path.password, 20, { message: 'Password cannot exceed 20 characters' });
   });
   login() {
+    const user = users.find(
+      (u) =>
+        u.email === this.loginForm.email().value() &&
+        u.password === this.loginForm.password().value()
+    );
+    if (!user) {
+      this.showLoginErrors.set(true);
+      return;
+    }
     this.authStore.login({
-      id: 1,
-      email: 'admin@test.com',
-      role: 'admin',
+      id: user.id,
+      email: user.email,
+      role: user.role,
     });
     this.router.navigate(['/dashboard']);
   }
