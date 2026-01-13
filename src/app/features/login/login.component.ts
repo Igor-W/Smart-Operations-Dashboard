@@ -1,23 +1,20 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthStore } from '../../core/auth/auth.store';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Field, form, maxLength, minLength, required } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { users } from '../../data/users';
-
-export interface LoginForm {
-  email: string;
-  password: string;
-}
+import { ILoginForm } from '../../common/interfaces/ILoginForm';
 
 @Component({
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     Field,
     MatCardModule,
     MatFormFieldModule,
@@ -76,6 +73,18 @@ export interface LoginForm {
       .login-button {
         align-self: flex-end;
       }
+      .register-link {
+        text-align: center;
+        margin-top: 1rem;
+      }
+      .register-link a {
+        color: var(--primary, #3f51b5);
+        text-decoration: none;
+      }
+      .register-link a:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
     `,
   ],
 })
@@ -84,7 +93,7 @@ export class LoginComponent {
   private readonly router = inject(Router);
 
   showLoginErrors = signal(false);
-  protected readonly loginData = signal<LoginForm>({
+  protected readonly loginData = signal<ILoginForm>({
     email: 'admin@test.com',
     password: 'password123',
   });

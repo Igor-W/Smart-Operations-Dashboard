@@ -78,6 +78,7 @@ export class PrivateLayoutComponent {
   menu = signal<MenuItem[]>([
     { label: 'Dashboard', route: '/dashboard' },
     { label: 'Settings', route: '/settings' },
+    { label: 'Products', route: '/products' },
   ]);
 
   logout() {

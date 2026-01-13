@@ -1,6 +1,6 @@
-import { User } from '../core/auth/auth.store';
+import { IUser } from '../common/interfaces/IUser';
 
-export const users: (User & { password: string })[] = [
+export const users: (IUser & { password: string })[] = [
   {
     id: 1,
     email: 'admin@test.com',

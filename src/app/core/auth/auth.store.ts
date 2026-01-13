@@ -1,10 +1,7 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-export interface User {
-  id: number;
-  email: string;
-  role: 'admin' | 'user';
-}
+import { IUser } from '../../common/interfaces/IUser';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -12,7 +9,7 @@ export class AuthStore {
   private readonly lsKey = 'sod_auth_user';
   private readonly router = inject(Router);
 
-  private readonly _user = signal<User | null>(null);
+  private readonly _user = signal<IUser | null>(null);
   readonly user = this._user;
 
   constructor() {
@@ -36,7 +33,7 @@ export class AuthStore {
       }
     });
   }
-  login(user: User) {
+  login(user: IUser) {
     this._user.set(user);
   }
 
