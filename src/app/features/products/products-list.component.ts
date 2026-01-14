@@ -1,16 +1,41 @@
 import { Component, inject } from '@angular/core';
-import { AsyncPipe, JsonPipe } from '@angular/common';
-import { ProductService } from '../../core/services/product.service';
+import { ProductsStore } from './products.store';
+import { ProductCardComponent } from './product-card/product-card.component';
 
 @Component({
+  standalone: true,
   selector: 'app-products-list',
-  imports: [AsyncPipe, JsonPipe],
-  template: `<h1>Products List Works!</h1>
-    @let products = products$ | async; @if(products) {
-    <div>{{ products | json }}</div>
-    }`,
+  imports: [ProductCardComponent],
+  template: `
+    <h1>Products</h1>
+
+    @if (store.loading()) {
+    <p>Loading...</p>
+    } @if (store.error()) {
+    <p class="error">{{ store.error() }}</p>
+    }
+    <style>
+      ul {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 1rem;
+        row-gap: 2rem; /* more margin between rows */
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+    </style>
+    <ul>
+      @for (product of store.products(); track product.id) {
+      <app-product-card [product]="product"></app-product-card>
+      }
+    </ul>
+  `,
 })
 export class ProductsListComponent {
-  private readonly _productService = inject(ProductService);
-  readonly products$ = this._productService.getAll();
+  readonly store = inject(ProductsStore);
+
+  constructor() {
+    this.store.load();
+  }
 }
